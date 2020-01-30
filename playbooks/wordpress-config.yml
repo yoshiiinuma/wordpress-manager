@@ -1,0 +1,14 @@
+---
+- name: "Display the Wordpress configuration file of the specified site"
+  hosts: v13
+  vars:
+    docroot: /var/www/html/dod
+  tasks:
+  - name: Get the Wordpress configuration
+    wp_config:
+      root: /var/www/html/dod
+    register: wpconf
+  - name: Display the Wordpress configuration
+    debug:
+      var: wpconf
+   

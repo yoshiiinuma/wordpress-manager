@@ -1,0 +1,8 @@
+{
+  "ANSIBLE_MODULE_ARGS": {
+    "filepath": "/path/to/wordpress/wp-config.php",
+    "replacements": [
+        { "from": "string_to_look_for", "to": "string_for_replacement" }
+    ]
+  }
+}
