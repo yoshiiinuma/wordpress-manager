@@ -1,0 +1,25 @@
+---
+- name: Extract all the virtual hosts from httpd.conf in production
+  hosts: prod
+  gather_facts: no
+  tasks:
+  - name: Get all the virtual hosts from httpd.conf
+    httpd_config:
+    register: virtual_hosts
+  - name: Extract web servers
+    set_fact:
+      webservers: "{{ virtual_hosts | json_query('servers' ) }}"
+      cacheable: yes
+  - name: Extract the document roots
+    set_fact:
+      docroots: "{{ webservers | json_query('[].root' ) | sort | unique }}"
+      cacheable: yes
+  - name: Extract the domain names
+    set_fact:
+      domains: "{{ webservers | json_query('[].name' ) | sort | unique }}"
+      cacheable: yes
+  - name: Create domain to docroot map
+    set_fact:
+      docroot_map: "{{ docroot_map | default({}) | combine({ item.name: item.root }) }}"
+      cacheable: yes
+    loop: "{{ webservers | json_query('[?root]') }}"
