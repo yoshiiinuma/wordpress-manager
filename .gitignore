@@ -2,3 +2,5 @@ hosts
 *.swp
 args/*
 !args/sample-*.json
+cache/*
+!cache/.keep
