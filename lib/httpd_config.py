@@ -63,8 +63,9 @@ def extract_virtualhosts(conf):
       if VirtualHostStart.match(line):
         cur = {}
       elif VirtualHostEnd.match(line):
-        if 'mainrootdir' not in cur.get('root', ''):
-          servers.append(cur)
+        if cur:
+          if 'mainrootdir' not in cur.get('root', ''):
+            servers.append(cur)
         cur = {}
       elif DocRoot.match(line):
         r = DocRoot.match(line)
