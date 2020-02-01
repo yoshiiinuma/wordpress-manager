@@ -1,14 +1,16 @@
 ---
 - name: "Display the Wordpress configuration file of the specified site"
-  hosts: v01
+  hosts: prod
   gather_facts: no
   tasks:
-  - name: Get all the virtual hosts from httpd.conf
-    httpd_config:
-    register: virtual_hosts
-  - name: Extract the document roots
-    set_fact:
-      docroots: "{{ virtual_hosts | json_query('servers[*].root' ) | sort | unique  }}" 
+  - fail: msg="domain_map is not defined; Run get-all-virtualhosts"
+    when: domain_map is not defined
+  #- name: Get all the virtual hosts from httpd.conf
+  #  httpd_config:
+  #  register: virtual_hosts
+  #- name: Extract the document roots
+  #  set_fact:
+  #    docroots: "{{ virtual_hosts | json_query('servers[*].root' ) | sort | unique }}"
   #- name: Set configuration paths
   # set_fact:
   #   config_paths: "{{ docroots | product(['wp-config.php']) | map('join', '/') | list }}" 
@@ -24,13 +26,22 @@
   #  debug:
   #    msg: "{{  item.item }}: {{ item.stat.exists }}" 
   #  loop: "{{ exist_test.results }}" 
-  - name: Extract the Wordpress DB configuration
+  - name: Extract the Wordpress configuration
     wp_config:
-      root: "{{ item }}"
-      category: db
+      root: "{{ item.key }}"
+      category: all
+    ignore_errors: yes
     register: wpconf
-    loop: "{{ docroots }}"
-  - name: Display Wordpress DB configuration
-    debug:
-      var: item
-    loop: "{{ wpconf.results }}" 
+    with_dict: "{{ domain_map }}"
+  - name: Save wordpress configuration
+    set_fact:
+      wordpress: "{{ wordpress | default({}) | combine({ item.item.value: item.options }) }}"
+      cacheable: yes
+    loop: "{{ wpconf.results | json_query('[?options]') }}"
+  - name: Save wordpress DB configuration
+    set_fact:
+      db: "{{ db | default({}) | combine({ item.key: item.value | json_query(db_option_filter) }) }}"
+      cacheable: yes
+    vars:
+      db_option_filter: "{ host: DB_HOST, name: DB_NAME, user: DB_USER, pass: DB_PASSWORD }"
+    with_dict: "{{ wordpress }}"
