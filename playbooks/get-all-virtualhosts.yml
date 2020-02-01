@@ -23,3 +23,8 @@
       docroot_map: "{{ docroot_map | default({}) | combine({ item.name: item.root }) }}"
       cacheable: yes
     loop: "{{ webservers | json_query('[?root]') }}"
+  - name: Create docroot to domain map
+    set_fact:
+      domain_map: "{{ domain_map | default({}) | combine({ item.root: item.name }) }}"
+      cacheable: yes
+    loop: "{{ webservers | json_query('[?root]') }}"
