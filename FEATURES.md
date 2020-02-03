@@ -1,70 +1,38 @@
 
 # PLAYBOOKS Features
 
----
-## Todos
----
+## Wordpress Maintenance
 
-### Wordpress Maintenance
+- Get all the Wordpress configurations from all servers in production and store locally (get-all-wp-configs)
 
-- Update DB host, name, user, password
-- Bulk update DB host
-- Regenerate keys and salts
-- Toggle the debug mode
-- Search and replace database contents
-- Copy a dev site from the production
+  ```bash
+  # Run get-all-virtualhosts before this
+  $ ansible-playbook playbooks/get-all-wp-configs.yml
+  ```
 
-- Update a plugin
-- Backup/Restore a plugin
-- Update all the plugins
-- Backup/Restore all the plugins
+## Apache
 
-- Update a theme
-- Backup/Restore a theme
+- Get all the virtual host information from all servers in production and store locally (get-all-virtualhosts)
 
-### WP-CLI
+  ```bash
+  $ ansible-playbook playbooks/get-all-virtualhosts.yml
+  ```
 
-- Install WP-CLI if it is not installed
-- Update WP-CLI
+## MySQL
 
-### PHP
+- Make a MySQL dump for a specified site (dump-mysql-db)
 
-- Set up Remi repo
-- Install PHP and PHP modules
-- Update PHP and PHP modules
-- List installed PHP modules
+  ```bash
+  # Run get-all-virtualhosts and get-all-wp-configs before this
+  $ ansible-playbook playbooks/dump-mysql-db.yml -e srchost=<SRCHOST> -e subd=<SUBDOMAIN>
+  ```
 
-### MySQL
+## Redhat
 
-- Make a MySQL dump for a specified site
-- Restore MySQL database from a specified dump
-- Make MySQL dumps for all the sites on a specified machine 
-- Restore all the MySQL databases on a specified machine
+- Install MySQL-python connector (install-mysql-connector)
 
-### EC2
+  ```bash
+  $ ansible-playbook playbooks/install-mysql-connector.yml
+  ```
 
-- Create a new EC2 instance that is configured for production
-- Create a new EC2 instance that is configured for development
-- Stop an EC2 instance
-- Create a snapshot
 
-### Apache
-
-- Create a virtual host
-- Enable/Disable a virtual host
-- Create a self signed certificate
-
-### Redhat
-
-- Install yum-plugin-security if not installed # Only for RH6
-- List available security updates
-- Install all security updates
-
-### Lets's Encrypt
-
-- Install certbot
-- Generate cert
-    - Authenticate the ownership
-    - Get the certificate
-    - Verify the certificate
-  
