@@ -1,0 +1,10 @@
+---
+- name: Install MySQL-python
+  hosts: bkup
+  gather_facts: no
+  tasks:
+    - name: Yum install MySQL-python
+      yum:
+        name: MySQL-python
+        state: present
+      become: true
