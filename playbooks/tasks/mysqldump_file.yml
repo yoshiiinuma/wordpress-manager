@@ -1,0 +1,18 @@
+# Create a MySQL dump filename from the current timestamp and store as dumpdst
+#
+# Required Args:
+#   subdomain: sub domain
+---
+- name: Get current timestamp
+  set_fact:
+    timestamp: "{{ lookup('pipe', 'date +%Y%m%d%H%M') }}"
+- name: Set sqldump file path
+  set_fact:
+    dumpdst: "bkup-{{ subdomain }}-{{ timestamp }}.sql.gz"
+- name: Save sqldump file path
+  set_fact:
+    bkupfiles: "{{ bkupfiles | default({}) | combine({ subdomain: dumpdst }) }}"
+    cacheable: yes
+#- name: Debug MySQL database
+#  debug:
+#    var: dumpdst

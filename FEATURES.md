@@ -24,7 +24,7 @@
 
   ```bash
   # Run get-all-virtualhosts and get-all-wp-configs before this
-  $ ansible-playbook playbooks/dump-mysql-db.yml -e srchost=<SRCHOST> -e subd=<SUBDOMAIN>
+  $ ansible-playbook playbooks/dump-mysql-db.yml -e srchost=<SRCHOST> -e subdomain=<SUBDOMAIN>
   ```
 
 ## Redhat

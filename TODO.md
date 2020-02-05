@@ -41,6 +41,11 @@
 - Stop an EC2 instance
 - Create a snapshot
 
+## S3
+
+- Copy/Sync files to S3
+- Delete old files on S3
+
 ## Apache
 
 - Create a virtual host

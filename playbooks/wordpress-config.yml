@@ -1,6 +1,6 @@
 ---
 - name: "Display the Wordpress configuration file of the specified site"
-  hosts: v13
+  hosts: "{{ target_host | default('v01') }}"
   vars:
     docroot: /var/www/html/dod
   tasks:

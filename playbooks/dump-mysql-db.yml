@@ -3,38 +3,10 @@
   hosts: bkup
   gather_facts: no
   tasks:
-  - fail: msg="srchost is not provided"
-    when: srchost is undefined
-  - fail: msg="subd (subdomain for the target site) is not provided"
-    when: subd is undefined
-  - fail: msg="Facts for {{ srchost }} was not found; Run get-all-virtualhosts"
-    when: hostvars[srchost] is undefined
-  - fail: msg="DB facts for {{ srchost }} was not found; Run get-all-wp-configs"
-    when: hostvars[srchost]['db'] is undefined
-  - name: Set domain variable
-    set_fact:
-      domain: "{{ subd }}.hawaii.gov"
-  - fail: msg="DB facts for {{ domain }} was not found; Run get-all-wp-configs"
-    when: hostvars[srchost]['db'][domain] is undefined
-  - name: Set currrent db variable
-    set_fact:
-      curdb: "{{ hostvars[srchost]['db'][domain] }}"
-  - name: Debug db
-    debug:
-      var: curdb
-  - name: Get current timestamp
-    set_fact:
-      timestamp: "{{ lookup('pipe', 'date +%Y%m%d%H%M') }}"
-  - name: Set sqldump file path
-    set_fact:
-      dumpdst: "bkup-{{ subd }}-{{ timestamp }}.sql.gz"
-  - name: Save sqldump file path
-    set_fact:
-      bkupfiles: "{{ bkupfiles | default({}) | combine({ subd: dumpdst }) }}"
-      cacheable: yes
-  - name: Debug MySQL database
-    debug:
-      var: dumpdst
+  # Set curdb
+  - import_tasks: tasks/mysql_config.yml
+  # Set dumpdst
+  - import_tasks: tasks/mysqldump_file.yml
   - name: Dump MySQL database
     mysql_db:
       state: dump
