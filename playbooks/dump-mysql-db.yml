@@ -1,12 +1,24 @@
+# Dump MySQL database
+#
+# Required Args:
+#   srchost: source host
+#   subdomain: sub domain
+#
+# Prerequisites:
+#   Run get-all-wp-configs
+#
+# Cache:
+#   bkupfiles[subdomain] = dumpdst
+#
 ---
 - name: Dump MySQL database
   hosts: bkup
   gather_facts: no
   tasks:
   # Set curdb
-  - import_tasks: tasks/mysql_config.yml
+  - import_tasks: tasks/get_cached_mysql_config.yml
   # Set dumpdst
-  - import_tasks: tasks/mysqldump_file.yml
+  - import_tasks: tasks/generate_mysqldump_filename.yml
   - name: Dump MySQL database
     mysql_db:
       state: dump
@@ -15,4 +27,9 @@
       login_host: "{{ curdb.host }}"
       login_user: "{{ curdb.user }}"
       login_password: "{{ curdb.pass }}"
+    check_mode: yes
+  - name: Save sqldump file path
+    set_fact:
+      bkupfiles: "{{ bkupfiles | default({}) | combine({ subdomain: dumpdst }) }}"
+      cacheable: yes
 

@@ -20,6 +20,6 @@
 - name: Set currrent db variable
   set_fact:
     curdb: "{{ hostvars[srchost]['db'][domain] }}"
-#- name: Debug db
-#  debug:
-#    var: curdb
+- name: Debug db
+  debug:
+    var: curdb

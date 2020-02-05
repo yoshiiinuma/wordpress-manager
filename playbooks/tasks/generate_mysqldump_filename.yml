@@ -6,9 +6,6 @@
 # Exported Variables:
 #   dumpdst
 #
-# Cached:
-#   bkupfiles[subdomain] = dumpdst
-#
 ---
 - name: Get current timestamp
   set_fact:
@@ -16,10 +13,6 @@
 - name: Set sqldump file path
   set_fact:
     dumpdst: "bkup-{{ subdomain }}-{{ timestamp }}.sql.gz"
-- name: Save sqldump file path
-  set_fact:
-    bkupfiles: "{{ bkupfiles | default({}) | combine({ subdomain: dumpdst }) }}"
-    cacheable: yes
-#- name: Debug MySQL database
-#  debug:
-#    var: dumpdst
+- name: Debug MySQL database
+  debug:
+    var: dumpdst

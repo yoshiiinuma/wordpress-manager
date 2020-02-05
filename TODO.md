@@ -3,12 +3,26 @@
 
 ## Wordpress Maintenance
 
+- Copy a dev site from the production
+  - Copy docroot from prod to dev
+  - Change the owner and permissions of the directory
+  - Create a MySQL dump on dev
+  - Create a new DB from the dump
+  - Create a new DB user on dev MySQL
+  - Grant privileges to the new user
+  - Changed the DB host in wp-config.php
+  - Create a virtualhost in sites-available
+  - Create a symlink in sites-enabled
+  - Check httpd.conf syntax
+  - Restart apache
+
+- Replace wordpress domain name
+
 - Update DB host, name, user, password
 - Bulk update DB host
 - Regenerate keys and salts
 - Toggle the debug mode
 - Search and replace database contents
-- Copy a dev site from the production
 - Update a plugin
 - Backup/Restore a plugin
 - Update all the plugins

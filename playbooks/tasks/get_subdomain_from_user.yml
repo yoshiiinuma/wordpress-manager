@@ -13,6 +13,3 @@
 - name: Set domain variable
   set_fact:
     domain: "{{ subdomain }}.hawaii.gov"
-#- name: Debug db
-#  debug:
-#    var: curdb
