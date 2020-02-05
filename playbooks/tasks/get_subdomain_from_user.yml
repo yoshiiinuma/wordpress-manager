@@ -1,0 +1,18 @@
+# Get subdomain as an argument
+# 
+# Required Args:
+#   subdomain: sub domain
+#
+# Export Variables:
+#   subdomain
+#   domain
+#
+---
+- fail: msg="subdomain is not provided"
+  when: subdomain is undefined
+- name: Set domain variable
+  set_fact:
+    domain: "{{ subdomain }}.hawaii.gov"
+#- name: Debug db
+#  debug:
+#    var: curdb
