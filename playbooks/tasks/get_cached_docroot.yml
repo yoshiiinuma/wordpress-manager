@@ -1,0 +1,21 @@
+# Get cached docroot
+# 
+# Required Variables:
+#   domain
+#
+# Prerequisites:
+#   Run get-all-virtualhosts
+#
+---
+- fail: msg="domian is not provided"
+  when: domain is undefined
+- fail: msg="docroot_map was not found; Run get-all-virtualhosts"
+  when: docroot_map is undefined
+- fail: msg="docroot_map for {{ domain }} was not found"
+  when: docroot_map[domain] is undefined
+- name: Set curdoc
+  set_fact:
+    curdoc: "{{ docroot_map[domain] }}"
+- name: Debug curdoc
+  debug:
+    var: curdoc

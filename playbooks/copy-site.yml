@@ -1,0 +1,16 @@
+# Copy site to remote host
+#
+---
+- name: Copy site to remote host
+  hosts: "{{ target_host | default('v01') }}"
+  gather_facts: no
+  tasks:
+  - import_tasks: tasks/get_subdomain_from_user.yml
+  - import_tasks: tasks/get_cached_docroot.yml
+  - name: Debug dev ip
+    debug:
+      var: dev_private_ip 
+
+    
+
+
