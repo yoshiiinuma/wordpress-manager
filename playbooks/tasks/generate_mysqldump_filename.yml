@@ -1,7 +1,14 @@
-# Create a MySQL dump filename from the current timestamp and store as dumpdst
+# Generate a MySQL dump filename from the current timestamp and store as dumpdst
 #
 # Required Args:
 #   subdomain: sub domain
+#
+# Exported Variables:
+#   dumpdst
+#
+# Cached:
+#   bkupfiles[subdomain] = dumpdst
+#
 ---
 - name: Get current timestamp
   set_fact:

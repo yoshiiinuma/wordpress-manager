@@ -5,21 +5,16 @@
 #   subdomain: sub domain
 #
 # Prerequisites:
-#   Run get-all-virtualhosts
 #   Run get-all-wp-configs
 #
 ---
 - fail: msg="srchost is not provided"
   when: srchost is undefined
-- fail: msg="subdomain is not provided"
-  when: subdomain is undefined
 - fail: msg="Facts for {{ srchost }} was not found; Run get-all-virtualhosts"
   when: hostvars[srchost] is undefined
 - fail: msg="DB facts for {{ srchost }} was not found; Run get-all-wp-configs"
   when: hostvars[srchost]['db'] is undefined
-- name: Set domain variable
-  set_fact:
-    domain: "{{ subdomain }}.hawaii.gov"
+- import_tasks: tasks/get_subdomain_from_user.yml
 - fail: msg="DB facts for {{ domain }} was not found; Run get-all-wp-configs"
   when: hostvars[srchost]['db'][domain] is undefined
 - name: Set currrent db variable
