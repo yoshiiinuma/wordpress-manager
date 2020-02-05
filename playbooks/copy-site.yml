@@ -1,5 +1,8 @@
 # Copy site to remote host
 #
+# Required Variables:
+#   srchost: source host
+#   subdomain
 ---
 - name: Copy site to remote host
   hosts: "{{ target_host | default('v01') }}"

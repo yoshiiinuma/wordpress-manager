@@ -1,11 +1,13 @@
 # Get cached docroot
-# 
+#
 # Required Variables:
 #   domain
 #
 # Prerequisites:
 #   Run get-all-virtualhosts
 #
+# Exported Variables:
+#   curdoc
 ---
 - fail: msg="domian is not provided"
   when: domain is undefined

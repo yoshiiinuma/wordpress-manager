@@ -1,11 +1,14 @@
 # Get MySQL configuration from the cache and store as curdb
 # 
-# Required Args:
+# Required Variables:
 #   srchost: source host
 #   subdomain: sub domain
 #
 # Prerequisites:
 #   Run get-all-wp-configs
+#
+# Exported Variables:
+#   curdb
 #
 ---
 - fail: msg="srchost is not provided"

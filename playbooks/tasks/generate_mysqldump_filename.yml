@@ -1,7 +1,7 @@
 # Generate a MySQL dump filename from the current timestamp and store as dumpdst
 #
 # Required Args:
-#   subdomain: sub domain
+#   subdomain
 #
 # Exported Variables:
 #   dumpdst
