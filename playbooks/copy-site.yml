@@ -1,19 +1,51 @@
 # Copy site to remote host
 #
 # Required Variables:
-#   srchost: source host
+#   srchost
 #   subdomain
 ---
-- name: Copy site to remote host
-  hosts: "{{ target_host | default('v01') }}"
+- name: Copy site from remote host
+  hosts: dev
   gather_facts: no
   tasks:
   - import_tasks: tasks/get_subdomain_from_user.yml
   - import_tasks: tasks/get_cached_docroot.yml
-  - name: Debug dev ip
+  - name: Get srchost private_ip and key
+    set_fact:
+      priv_ip: "{{ lookup('vars', srchost + '_private_ip') }}"
+      priv_key: "{{ lookup('vars', srchost + '_private_key') }}"
+  - name: Debug 
     debug:
-      var: dev_private_ip 
-
-    
-
+      var: priv_ip
+  - name: Debug 
+    debug:
+      var: priv_key
+  - name: Set dstdir (dirbase = '/var/www/html')
+    set_fact:
+      dstdir: "{{ curdoc is match('/var/www/html/*') | ternary(curdoc, '/var/www/html/' + (curdoc|basename)) }}"
+  - name: Check if the directory exists in dev machine
+    stat:
+      path: "{{ dstdir }}"
+    register: test_dstdir
+  - name: Show waring if dstdir already exists
+    debug: msg="{{ dstdir }} already exists; Change it to /var/www/html/tmp/{{dstdir|basename}}"
+    when: test_dstdir.stat.exists 
+  - name: Change dstdir to use '/var/www/html/tmp')
+    set_fact:
+      dstdir: "{{ '/var/www/html/tmp/' + (dstdir|basename) }}"
+    when: test_dstdir.stat.exists 
+  - name: Show final dstdir
+    debug:
+      var: dstdir
+  - name: Rsync the directory
+    synchronize:
+      src: "{{ 'rsync://' + priv_ip + ':' + curdoc }}"
+      dest: "{{ dstdir }}"
+      mode: pull
+      archive: yes
+      links: no
+      checksum: yes
+      partial: yes
+      private_key: "{{ priv_key }}"
+    delegate_to: localhost
 
