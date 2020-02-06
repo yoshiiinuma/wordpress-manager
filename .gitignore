@@ -4,3 +4,4 @@ args/*
 !args/sample-*.json
 cache/*
 !cache/.keep
+.venv

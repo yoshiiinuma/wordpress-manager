@@ -1,5 +1,14 @@
 # Ansible Playbooks and Modules for Wordpress Maintenance
 
+## Setup
+
+```bash
+# pipenv will create the virtual env (.venv) in ther project root
+
+$ echo 'export PIPENV_VENV_IN_PROJECT=1' >> .bashrc
+$ source .bashrc
+```
+
 ## Install
 
 ```bash
