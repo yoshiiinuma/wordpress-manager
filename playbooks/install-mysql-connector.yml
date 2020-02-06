@@ -3,8 +3,8 @@
   hosts: bkup
   gather_facts: no
   tasks:
-    - name: Yum install MySQL-python
-      yum:
-        name: MySQL-python
-        state: present
-      become: true
+  - name: Yum install MySQL-python
+    yum:
+      name: MySQL-python
+      state: present
+    become: true
