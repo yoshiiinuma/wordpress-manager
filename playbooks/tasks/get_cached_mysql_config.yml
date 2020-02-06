@@ -1,8 +1,8 @@
 # Get MySQL configuration from the cache and store as curdb
 # 
 # Required Variables:
-#   srchost: source host
-#   subdomain: sub domain
+#   srchost
+#   subdomain
 #
 # Prerequisites:
 #   Run get-all-wp-configs

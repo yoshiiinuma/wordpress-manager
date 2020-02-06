@@ -1,6 +1,7 @@
 # Get cached docroot
 #
 # Required Variables:
+#   srchost
 #   domain
 #
 # Prerequisites:
@@ -9,15 +10,19 @@
 # Exported Variables:
 #   curdoc
 ---
+- fail: msg="srchost is not provided"
+  when: srchost is undefined
 - fail: msg="domian is not provided"
   when: domain is undefined
-- fail: msg="docroot_map was not found; Run get-all-virtualhosts"
-  when: docroot_map is undefined
+- fail: msg="Facts for {{ srchost }} was not found; Run get-all-virtualhosts"
+  when: hostvars[srchost] is undefined
+- fail: msg="docroot_map for {{ srchost }} was not found; Run get-all-virtualhosts"
+  when: hostvars[srchost]['docroot_map'] is undefined
 - fail: msg="docroot_map for {{ domain }} was not found"
-  when: docroot_map[domain] is undefined
+  when: hostvars[srchost]['docroot_map'][domain] is undefined
 - name: Set curdoc
   set_fact:
-    curdoc: "{{ docroot_map[domain] }}"
+    curdoc: "{{ hostvars[srchost]['docroot_map'][domain] }}"
 - name: Debug curdoc
   debug:
     var: curdoc

@@ -1,8 +1,8 @@
 # Dump MySQL database
 #
-# Required Args:
-#   srchost: source host
-#   subdomain: sub domain
+# Required Varialbes:
+#   srchost
+#   subdomain
 #
 # Prerequisites:
 #   Run get-all-wp-configs
