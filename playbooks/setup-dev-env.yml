@@ -1,0 +1,35 @@
+# Copy site to dev machine
+#
+# Required Variables:
+#   subdomain
+#
+---
+- name: Copy site to dev machine
+  hosts: dev
+  gather_facts: no
+  tasks:
+  - import_tasks: tasks/get_subdomain_from_user.yml
+  - import_tasks: tasks/get_cached_docroot.yml
+  - name: Set docroot
+    set_fact:
+      docroot: "/var/www/html/DEV/{{ curdoc|basename }}"
+  - name: Check if the directory exists in dev machine
+    stat:
+      path: "{{ docroot }}"
+    register: test_dir
+  - fail: msg="{{ docroot }} does not exist; Run copy-site-to-dev"
+    when: test_dir.stat.exists == False or test_dir.stat.isdir == False
+  - name: Change onwer/group and permissions
+    become: yes
+    file:
+      path: "{{ docroot }}"
+      recurse: yes
+      owner: apache
+      group: apache
+      mode: u=rwX,g=rX,o=rX
+#  - name: Change directory permission to 755
+#    shell: "find {{ docroot }} -type d -exec chmod 0755 {} \;"
+#  - name: Change file permission to 644
+#    shell: "find {{ docroot }} -type f -exec chmod 0644 {} \;"
+
+
