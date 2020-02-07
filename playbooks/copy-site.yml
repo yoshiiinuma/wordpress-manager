@@ -1,51 +1,50 @@
-# Copy site to remote host
+# Copy site to dev machine
 #
 # Required Variables:
 #   srchost
 #   subdomain
+#
 ---
-- name: Copy site from remote host
-  hosts: dev
+- name: Copy site to dev machine
+  hosts: "{{ srchost }}"
   gather_facts: no
   tasks:
   - import_tasks: tasks/get_subdomain_from_user.yml
   - import_tasks: tasks/get_cached_docroot.yml
-  - name: Get srchost private_ip and key
-    set_fact:
-      priv_ip: "{{ lookup('vars', srchost + '_private_ip') }}"
-      priv_key: "{{ lookup('vars', srchost + '_private_key') }}"
-  - name: Debug 
-    debug:
-      var: priv_ip
-  - name: Debug 
-    debug:
-      var: priv_key
-  - name: Set dstdir (dirbase = '/var/www/html')
-    set_fact:
-      dstdir: "{{ curdoc is match('/var/www/html/*') | ternary(curdoc, '/var/www/html/' + (curdoc|basename)) }}"
-  - name: Check if the directory exists in dev machine
-    stat:
-      path: "{{ dstdir }}"
-    register: test_dstdir
-  - name: Show waring if dstdir already exists
-    debug: msg="{{ dstdir }} already exists; Change it to /var/www/html/tmp/{{dstdir|basename}}"
-    when: test_dstdir.stat.exists 
-  - name: Change dstdir to use '/var/www/html/tmp')
-    set_fact:
-      dstdir: "{{ '/var/www/html/tmp/' + (dstdir|basename) }}"
-    when: test_dstdir.stat.exists 
-  - name: Show final dstdir
-    debug:
-      var: dstdir
+#  - name: Get srchost private_ip and key
+#    set_fact:
+#      priv_ip: "{{ lookup('vars', srchost + '_private_ip') }}"
+#      priv_key: "{{ lookup('vars', srchost + '_private_key') }}"
+#  - name: Set dstdir (dirbase = '/var/www/html')
+#    set_fact:
+#      dstdir: "{{ curdoc is match('/var/www/html/*') | ternary(curdoc, '/var/www/html/' + (curdoc|basename)) }}"
+#  - name: Check if the directory exists in dev machine
+#    stat:
+#      path: "{{ dstdir }}"
+#    register: test_dstdir
+#  - name: Show waring if dstdir already exists
+#    debug: msg="{{ dstdir }} already exists; Change it to /var/www/html/tmp/{{dstdir|basename}}"
+#    when: test_dstdir.stat.exists
+#  - name: Change dstdir to use '/var/www/html/tmp')
+#    set_fact:
+#      dstdir: "{{ '/var/www/html/tmp/' + (dstdir|basename) }}"
+#    when: test_dstdir.stat.exists
+#  - name: Show final dstdir
+#    debug:
+#      var: dstdir
+#  - name: Run Rsync
+#    shell: "rsync -az {{ curdoc }} rsync://{{ dev_private_ip }}/{{ srchost }}/"
+#    become: yes
+#
   - name: Rsync the directory
+    become: yes
     synchronize:
-      src: "{{ 'rsync://' + priv_ip + ':' + curdoc }}"
-      dest: "{{ dstdir }}"
-      mode: pull
+      src: "{{ curdoc }}"
+      dest: "rsync://{{ dev_private_ip }}/{{ srchost }}/"
       archive: yes
       links: no
       checksum: yes
       partial: yes
-      private_key: "{{ priv_key }}"
-    delegate_to: localhost
+      verify_host: yes
+    delegate_to: "{{ srchost }}"
 
