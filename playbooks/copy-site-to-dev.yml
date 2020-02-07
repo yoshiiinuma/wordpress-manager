@@ -1,0 +1,25 @@
+# Copy site to dev machine
+#
+# Required Variables:
+#   srchost
+#   subdomain
+#
+---
+- name: Copy site to dev machine
+  hosts: "{{ srchost }}"
+  gather_facts: no
+  tasks:
+  - import_tasks: tasks/get_subdomain_from_user.yml
+  - import_tasks: tasks/get_cached_docroot.yml
+  - name: Rsync the directory
+    become: yes
+    synchronize:
+      src: "{{ curdoc }}"
+      dest: "rsync://{{ dev_private_ip }}/dev/"
+      archive: yes
+      links: no
+      checksum: yes
+      partial: yes
+      verify_host: yes
+    delegate_to: "{{ srchost }}"
+
